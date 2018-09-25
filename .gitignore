@@ -1,1 +1,4 @@
 .idea
+cacerts
+charles-ssl-proxying-certificate.cer
+src/main/resources/application.conf
