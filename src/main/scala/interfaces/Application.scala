@@ -15,12 +15,21 @@ object Application extends App {
 
   case class Parameter(filter_by: Option[String], sort_by: Option[String], sort_order: Option[String], limit: Option[Int])
 
+  implicit val myResponseDecoder: Decoder[MyResponse] = deriveDecoder[MyResponse]
+
+  case class MyResponse(doc_ids: Seq[String], cursor: Cursor, has_more: Boolean)
+
+  implicit val cursorDecoder: Decoder[Cursor] = deriveDecoder[Cursor]
+
+  case class Cursor(value: String, expiration: String)
+
   val response =
     sttp
       .post(uri"https://api.dropboxapi.com/2/paper/docs/list")
       .auth.bearer(token)
       .contentType("application/json")
       .body(Parameter(None, None, None, None))
+      .response(asJson[MyResponse])
       .send()
   println(response.body)
 }
