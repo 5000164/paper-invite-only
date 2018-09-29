@@ -23,6 +23,8 @@ object Application extends App {
 
   case class Cursor(value: String, expiration: String)
 
+  // 型を指定して実行すると「polymorphic expression cannot be instantiated to expected type;」が発生する
+  // おそらくこれ？ -> https://github.com/scala/bug/issues/8983
   val response =
     sttp
       .post(uri"https://api.dropboxapi.com/2/paper/docs/list")
