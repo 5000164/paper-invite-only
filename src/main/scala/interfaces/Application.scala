@@ -11,9 +11,16 @@ object Application extends App {
   val token = conf.getString("token")
 
   implicit val backend: SttpBackend[Id, Nothing] = HttpURLConnectionBackend()
-  implicit val encoder: Encoder[Parameter] = deriveEncoder[Parameter].mapJsonObject(_.filter { case (_, Json.Null) => false case _ => true })
+  implicit val encoder: Encoder[Parameter] = deriveEncoder[Parameter].mapJsonObject(_.filter {
+    case (_, Json.Null) => false
+    case _              => true
+  })
 
-  case class Parameter(filter_by: Option[String], sort_by: Option[String], sort_order: Option[String], limit: Option[Int])
+  case class Parameter(
+      filter_by: Option[String],
+      sort_by: Option[String],
+      sort_order: Option[String],
+      limit: Option[Int])
 
   implicit val myResponseDecoder: Decoder[MyResponse] = deriveDecoder[MyResponse]
 
@@ -28,7 +35,8 @@ object Application extends App {
   val response =
     sttp
       .post(uri"https://api.dropboxapi.com/2/paper/docs/list")
-      .auth.bearer(token)
+      .auth
+      .bearer(token)
       .contentType("application/json")
       .body(Parameter(None, None, None, None))
       .response(asJson[MyResponse])
