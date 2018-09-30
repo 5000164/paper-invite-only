@@ -38,7 +38,7 @@ object Application extends App {
       .auth
       .bearer(token)
       .contentType("application/json")
-      .body(Parameter(None, None, None, None))
+      .body(Parameter(filter_by = None, sort_by = None, sort_order = None, limit = None))
       .response(asJson[MyResponse])
       .send()
   response.body match {
