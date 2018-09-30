@@ -41,5 +41,24 @@ object Application extends App {
       .body(Parameter(None, None, None, None))
       .response(asJson[MyResponse])
       .send()
-  println(response.body)
+  response.body match {
+    case Right(decoded) =>
+      decoded match {
+        case Right(myResponse) =>
+          val cursorValue = myResponse.cursor.value
+          case class ContinueParameter(cursor: String)
+          implicit val encoder: Encoder[ContinueParameter] = deriveEncoder
+          val continueResponse =
+            sttp
+              .post(uri"https://api.dropboxapi.com/2/paper/docs/list/continue")
+              .auth
+              .bearer(token)
+              .contentType("application/json")
+              .body(ContinueParameter(cursorValue))
+              .send()
+          println(continueResponse)
+        case Left(_) =>
+      }
+    case Left(_) =>
+  }
 }
