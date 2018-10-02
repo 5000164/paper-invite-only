@@ -29,8 +29,8 @@ class Paper(val token: String) {
       case (_, Json.Null) => false
       case _              => true
     })
-    implicit val cursorDecoder: Decoder[List.Cursor] = deriveDecoder[List.Cursor]
-    implicit val decoder: Decoder[List.Response] = deriveDecoder[List.Response]
+    implicit val cursorDecoder: Decoder[List.Cursor] = deriveDecoder
+    implicit val decoder: Decoder[List.Response] = deriveDecoder
     val r = sttp
       .post(uri"https://api.dropboxapi.com/2/paper/docs/list")
       .auth
