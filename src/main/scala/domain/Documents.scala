@@ -2,7 +2,7 @@ package domain
 
 import interfaces.Paper
 
-object documents {
+object Documents {
   def all(paper: Paper): Seq[String] = {
     paper.list().body match {
       case Right(decoded) =>
