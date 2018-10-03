@@ -24,7 +24,11 @@ class Paper(val token: String) {
     *
     * @return 取得した一覧
     */
-  def list(): Response[Either[DeserializationError[Error], List.Response]] = {
+  def list(
+      filterBy: Option[String] = None,
+      sortBy: Option[String] = None,
+      sortOrder: Option[String] = None,
+      limit: Option[Int] = None): Response[Either[DeserializationError[Error], List.Response]] = {
     implicit val encoder: Encoder[List.Parameter] = deriveEncoder[List.Parameter].mapJsonObject(_.filter {
       case (_, Json.Null) => false
       case _              => true
@@ -36,7 +40,7 @@ class Paper(val token: String) {
       .auth
       .bearer(token)
       .contentType("application/json")
-      .body(List.Parameter(filter_by = None, sort_by = None, sort_order = None, limit = Some(10)))
+      .body(List.Parameter(filterBy, sortBy, sortOrder, limit))
       .response(asJson[List.Response])
       .send()
     r
