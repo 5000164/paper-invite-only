@@ -6,8 +6,7 @@ object Documents {
   def all(paper: Paper): Seq[String] = {
     paper.list() match {
       case Right(list) =>
-        val r = paper.listContinue(list.cursor.value)
-        println(r)
+        println(list)
       case Left(_) =>
     }
     Seq()
