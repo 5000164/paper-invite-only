@@ -31,7 +31,7 @@ class Paper(val token: String) {
       limit: Option[Int] = None): Response[Either[DeserializationError[Error], List.Response]] = {
     implicit val encoder: Encoder[List.Parameter] = deriveEncoder[List.Parameter].mapJsonObject(_.filter {
       case (_, Json.Null) => false
-      case _              => true
+      case _ => true
     })
     implicit val cursorDecoder: Decoder[List.Cursor] = deriveDecoder
     implicit val decoder: Decoder[List.Response] = deriveDecoder
