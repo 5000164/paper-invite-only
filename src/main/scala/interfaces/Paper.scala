@@ -28,14 +28,14 @@ class Paper(val token: String) {
       filterBy: Option[String] = None,
       sortBy: Option[String] = None,
       sortOrder: Option[String] = None,
-      limit: Option[Int] = None): Response[Either[DeserializationError[Error], List.Response]] = {
+      limit: Option[Int] = None): Either[String, List.Response] = {
     implicit val encoder: Encoder[List.Parameter] = deriveEncoder[List.Parameter].mapJsonObject(_.filter {
       case (_, Json.Null) => false
       case _ => true
     })
     implicit val cursorDecoder: Decoder[List.Cursor] = deriveDecoder
     implicit val decoder: Decoder[List.Response] = deriveDecoder
-    val r = sttp
+    sttp
       .post(uri"https://api.dropboxapi.com/2/paper/docs/list")
       .auth
       .bearer(token)
@@ -43,7 +43,17 @@ class Paper(val token: String) {
       .body(List.Parameter(filterBy, sortBy, sortOrder, limit))
       .response(asJson[List.Response])
       .send()
-    r
+      .body match {
+      case Right(response) =>
+        response match {
+          case Right(decoded) =>
+            Right(decoded)
+          case Left(e) =>
+            Left(e.message)
+        }
+      case Left(e) =>
+        Left(e)
+    }
   }
 
   /**
