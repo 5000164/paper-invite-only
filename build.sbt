@@ -6,6 +6,7 @@ val sttpCore = "com.softwaremill.sttp"  %% "core"          % "1.3.5"
 val sttpCirce = "com.softwaremill.sttp" %% "circe"         % "1.3.5"
 val scalaTest = "org.scalatest"         %% "scalatest"     % "3.0.5" % "test"
 val scalactic = "org.scalactic"         %% "scalactic"     % "3.0.5" % "test"
+val scalaMock = "org.scalamock"         %% "scalamock"     % "4.1.0" % "test"
 
 ThisBuild / organization := "jp.5000164"
 ThisBuild / scalaVersion := "2.12.6"
@@ -22,5 +23,6 @@ lazy val root = (project in file("."))
       sttpCore,
       sttpCirce,
       scalaTest,
-      scalactic)
+      scalactic,
+      scalaMock)
   )
