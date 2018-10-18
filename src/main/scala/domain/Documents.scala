@@ -22,7 +22,7 @@ object Documents {
     def continue(now: Seq[String], value: String): Seq[String] = {
       paper.listContinue(value) match {
         case Right(list) =>
-          if (list.has_more) continue(list.doc_ids, list.cursor.value)
+          if (list.has_more) continue(now ++ list.doc_ids, list.cursor.value)
           else now ++ list.doc_ids
         case Left(_) =>
           Seq()
