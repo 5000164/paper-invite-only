@@ -62,11 +62,11 @@ class Paper(val token: String) {
     * @param cursor この値に指定した続きから取得する。
     * @return 取得した一覧
     */
-  def listContinue(cursor: String): Response[Either[DeserializationError[Error], ListContinue.Response]] = {
+  def listContinue(cursor: String): Either[String, ListContinue.Response] = {
     implicit val encoder: Encoder[ListContinue.Parameter] = deriveEncoder
     implicit val cursorDecoder: Decoder[ListContinue.Cursor] = deriveDecoder
     implicit val decoder: Decoder[ListContinue.Response] = deriveDecoder
-    val r = sttp
+    sttp
       .post(uri"https://api.dropboxapi.com/2/paper/docs/list/continue")
       .auth
       .bearer(token)
@@ -74,6 +74,16 @@ class Paper(val token: String) {
       .body(ListContinue.Parameter(cursor))
       .response(asJson[ListContinue.Response])
       .send()
-    r
+      .body match {
+      case Right(response) =>
+        response match {
+          case Right(decoded) =>
+            Right(decoded)
+          case Left(e) =>
+            Left(e.message)
+        }
+      case Left(e) =>
+        Left(e)
+    }
   }
 }
