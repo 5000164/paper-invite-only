@@ -15,14 +15,5 @@ ThisBuild / version := "0.1.0-SNAPSHOT"
 lazy val root = (project in file("."))
   .settings(
     name := "paper-invite-only",
-    libraryDependencies ++= Seq(
-      typesafeConfig,
-      circeCore,
-      circeGeneric,
-      circeParser,
-      sttpCore,
-      sttpCirce,
-      scalaTest,
-      scalactic,
-      scalaMock)
+    libraryDependencies ++= Seq(typesafeConfig, circeCore, circeGeneric, circeParser, sttpCore, sttpCirce, scalaTest, scalactic, scalaMock)
   )
