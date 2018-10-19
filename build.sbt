@@ -9,7 +9,7 @@ val scalactic = "org.scalactic"         %% "scalactic"     % "3.0.5" % "test"
 val scalaMock = "org.scalamock"         %% "scalamock"     % "4.1.0" % "test"
 
 ThisBuild / organization := "jp.5000164"
-ThisBuild / scalaVersion := "2.12.6"
+ThisBuild / scalaVersion := "2.12.7"
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
 lazy val root = (project in file("."))
