@@ -37,4 +37,8 @@ object Documents {
         Seq()
     }
   }
+
+  def toPrivate(paper: Paper, idList: Seq[String]): Unit = {
+    paper.getSharingPolicy(idList.head)
+  }
 }

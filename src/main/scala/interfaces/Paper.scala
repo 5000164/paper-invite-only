@@ -2,7 +2,7 @@ package interfaces
 
 import com.softwaremill.sttp._
 import com.softwaremill.sttp.circe._
-import domain.paper.{List, ListContinue}
+import domain.paper.{List, ListContinue, SharingPolicy}
 import io.circe._
 import io.circe.generic.semiauto._
 
@@ -85,5 +85,18 @@ class Paper(val token: String) {
       case Left(e) =>
         Left(e)
     }
+  }
+
+  def getSharingPolicy(id: String): Unit = {
+    implicit val encoder: Encoder[SharingPolicy.Parameter] = deriveEncoder
+    val result = sttp
+      .post(uri"https://api.dropboxapi.com/2/paper/docs/sharing_policy/get")
+      .auth
+      .bearer(token)
+      .contentType("application/json")
+      .body(SharingPolicy.Parameter(id))
+      .send()
+      .body
+    println(result)
   }
 }

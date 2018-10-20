@@ -9,5 +9,5 @@ object Application extends App {
   val paper = new Paper(token)
 
   val idList = Documents.all(paper)
-  println(idList.length)
+  Documents.toPrivate(paper, idList)
 }
