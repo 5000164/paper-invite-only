@@ -87,16 +87,28 @@ class Paper(val token: String) {
     }
   }
 
-  def getSharingPolicy(id: String): Unit = {
+  def getSharingPolicy(id: String): Either[String, SharingPolicy.Response] = {
     implicit val encoder: Encoder[SharingPolicy.Parameter] = deriveEncoder
-    val result = sttp
+    implicit val cursorDecoder: Decoder[SharingPolicy.Tag] = deriveDecoder
+    implicit val decoder: Decoder[SharingPolicy.Response] = deriveDecoder
+    sttp
       .post(uri"https://api.dropboxapi.com/2/paper/docs/sharing_policy/get")
       .auth
       .bearer(token)
       .contentType("application/json")
       .body(SharingPolicy.Parameter(id))
+      .response(asJson[SharingPolicy.Response])
       .send()
-      .body
-    println(result)
+      .body match {
+      case Right(response) =>
+        response match {
+          case Right(decoded) =>
+            Right(decoded)
+          case Left(e) =>
+            Left(e.message)
+        }
+      case Left(e) =>
+        Left(e)
+    }
   }
 }

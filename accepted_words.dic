@@ -5,3 +5,4 @@ dropbox
 scalatest
 scalactic
 scalamock
+.tag
