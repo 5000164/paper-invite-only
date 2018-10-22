@@ -2,7 +2,7 @@ package interfaces
 
 import com.softwaremill.sttp._
 import com.softwaremill.sttp.circe._
-import domain.paper.{List, ListContinue, SharingPolicy}
+import domain.paper.{List, ListContinue, ToPrivateSharingPolicy}
 import io.circe._
 import io.circe.generic.semiauto._
 
@@ -87,28 +87,19 @@ class Paper(val token: String) {
     }
   }
 
-  def getSharingPolicy(id: String): Either[String, SharingPolicy.Response] = {
-    implicit val encoder: Encoder[SharingPolicy.Parameter] = deriveEncoder
-    implicit val cursorDecoder: Decoder[SharingPolicy.Tag] = deriveDecoder
-    implicit val decoder: Decoder[SharingPolicy.Response] = deriveDecoder
+  def toPrivateSharingPolicy(id: String): Either[String, Unit] = {
+    implicit val sharingPolicyEncoder: Encoder[ToPrivateSharingPolicy.SharingPolicy] = deriveEncoder
+    implicit val encoder: Encoder[ToPrivateSharingPolicy.Parameter] = deriveEncoder
     sttp
-      .post(uri"https://api.dropboxapi.com/2/paper/docs/sharing_policy/get")
+      .post(uri"https://api.dropboxapi.com/2/paper/docs/sharing_policy/set")
       .auth
       .bearer(token)
       .contentType("application/json")
-      .body(SharingPolicy.Parameter(id))
-      .response(asJson[SharingPolicy.Response])
+      .body(ToPrivateSharingPolicy.Parameter(id, ToPrivateSharingPolicy.SharingPolicy("invite_only")))
       .send()
       .body match {
-      case Right(response) =>
-        response match {
-          case Right(decoded) =>
-            Right(decoded)
-          case Left(e) =>
-            Left(e.message)
-        }
-      case Left(e) =>
-        Left(e)
+      case Right(_) => Right(())
+      case Left(e) => Left(e)
     }
   }
 }

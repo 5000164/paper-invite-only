@@ -39,7 +39,7 @@ object Documents {
   }
 
   def toPrivate(paper: Paper, idList: Seq[String]): Unit = {
-    val result = paper.getSharingPolicy(idList.head)
+    val result = paper.toPrivateSharingPolicy(idList.head)
     println(result)
   }
 }
