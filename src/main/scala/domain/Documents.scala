@@ -60,7 +60,7 @@ object Documents {
           id <- idList
         } yield {
           val f = Future {
-            paper.toPrivateSharingPolicy(id) match {
+            paper.inviteOnlySharingPolicy(id) match {
               case Right(_) =>
               case Left(message: String) => throw new Exception(message)
             }
