@@ -9,5 +9,5 @@ object Application extends App {
   val paper = new Paper(token)
 
   val idList = Documents.all(paper)
-  Documents.toPrivate(paper, idList)
+  Documents.inviteOnly(paper, idList)
 }
