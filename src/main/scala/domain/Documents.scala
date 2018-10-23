@@ -38,8 +38,10 @@ object Documents {
     }
   }
 
-  def inviteOnly(idList: Seq[String])(implicit paper: Paper): Unit = {
-    val result = paper.toPrivateSharingPolicy(idList.head)
-    println(result)
+  implicit class InviteOnlyWrapper(val idList: Seq[String]) {
+    def inviteOnly(implicit paper: Paper): Unit = {
+      val result = paper.toPrivateSharingPolicy(idList.head)
+      println(result)
+    }
   }
 }
