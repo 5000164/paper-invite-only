@@ -2,7 +2,7 @@ package interfaces
 
 import com.softwaremill.sttp._
 import com.softwaremill.sttp.circe._
-import domain.paper.{List, ListContinue}
+import domain.paper.{InviteOnlySharingPolicy, List, ListContinue}
 import io.circe._
 import io.circe.generic.semiauto._
 
@@ -84,6 +84,28 @@ class Paper(val token: String) {
         }
       case Left(e) =>
         Left(e)
+    }
+  }
+
+  /**
+    * ドキュメントの公開範囲を invite only にする
+    *
+    * @param id 処理対象のドキュメント
+    * @return 実行結果
+    */
+  def inviteOnlySharingPolicy(id: String): Either[String, Unit] = {
+    implicit val sharingPolicyEncoder: Encoder[InviteOnlySharingPolicy.SharingPolicy] = deriveEncoder
+    implicit val encoder: Encoder[InviteOnlySharingPolicy.Parameter] = deriveEncoder
+    sttp
+      .post(uri"https://api.dropboxapi.com/2/paper/docs/sharing_policy/set")
+      .auth
+      .bearer(token)
+      .contentType("application/json")
+      .body(InviteOnlySharingPolicy.Parameter(id, InviteOnlySharingPolicy.SharingPolicy("invite_only")))
+      .send()
+      .body match {
+      case Right(_) => Right(())
+      case Left(e) => Left(e)
     }
   }
 }

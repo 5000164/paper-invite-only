@@ -2,6 +2,10 @@ package domain
 
 import interfaces.Paper
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
+
 object Documents {
 
   /**
@@ -10,7 +14,7 @@ object Documents {
     * @param paper Dropbox Paper へアクセスするためのクライアント
     * @return すべてのドキュメントの ID 一覧
     */
-  def all(paper: Paper): Seq[String] = {
+  def all(implicit paper: Paper): Seq[String] = {
 
     /**
       * ドキュメントの続きがなくなるまで取得する
@@ -35,6 +39,37 @@ object Documents {
         else list.doc_ids
       case Left(_) =>
         Seq()
+    }
+  }
+
+  /**
+    * invite only にする処理のラッパー
+    *
+    * @param idList invite only にする対象のドキュメント
+    */
+  implicit class InviteOnlyWrapper(val idList: Seq[String]) {
+
+    /**
+      * 指定されたドキュメントを invite only にする
+      *
+      * @param paper Dropbox Paper へアクセスするためのクライアント
+      */
+    def inviteOnly(implicit paper: Paper): Unit = {
+      Await.ready(
+        Future.sequence(for {
+          id <- idList
+        } yield {
+          val f = Future {
+            paper.inviteOnlySharingPolicy(id) match {
+              case Right(_) =>
+              case Left(message: String) => throw new Exception(message)
+            }
+          }
+          f.failed.foreach(e => println(e))
+          f
+        }),
+        Duration.Inf
+      )
     }
   }
 }
