@@ -10,7 +10,7 @@ object Documents {
     * @param paper Dropbox Paper へアクセスするためのクライアント
     * @return すべてのドキュメントの ID 一覧
     */
-  def all(paper: Paper): Seq[String] = {
+  def all(implicit paper: Paper): Seq[String] = {
 
     /**
       * ドキュメントの続きがなくなるまで取得する
@@ -38,7 +38,7 @@ object Documents {
     }
   }
 
-  def inviteOnly(paper: Paper, idList: Seq[String]): Unit = {
+  def inviteOnly(idList: Seq[String])(implicit paper: Paper): Unit = {
     val result = paper.toPrivateSharingPolicy(idList.head)
     println(result)
   }
