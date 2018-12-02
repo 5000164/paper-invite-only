@@ -28,7 +28,8 @@ object Documents {
         case Right(list) =>
           if (list.has_more) continue(now ++ list.doc_ids, list.cursor.value)
           else now ++ list.doc_ids
-        case Left(_) =>
+        case Left(e) =>
+          println(e)
           Seq()
       }
     }
@@ -37,7 +38,8 @@ object Documents {
       case Right(list) =>
         if (list.has_more) continue(list.doc_ids, list.cursor.value)
         else list.doc_ids
-      case Left(_) =>
+      case Left(e) =>
+        println(e)
         Seq()
     }
   }
