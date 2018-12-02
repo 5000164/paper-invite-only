@@ -28,7 +28,8 @@ object Documents {
         case Right(list) =>
           if (list.has_more) continue(now ++ list.doc_ids, list.cursor.value)
           else now ++ list.doc_ids
-        case Left(_) =>
+        case Left(e) =>
+          println(e)
           Seq()
       }
     }
@@ -37,7 +38,8 @@ object Documents {
       case Right(list) =>
         if (list.has_more) continue(list.doc_ids, list.cursor.value)
         else list.doc_ids
-      case Left(_) =>
+      case Left(e) =>
+        println(e)
         Seq()
     }
   }
@@ -55,9 +57,11 @@ object Documents {
       * @param paper Dropbox Paper へアクセスするためのクライアント
       */
     def inviteOnly(implicit paper: Paper): Unit = {
-      Await.ready(
+      for {
+        groupedIdList <- idList.grouped(4)
+      } Await.ready(
         Future.sequence(for {
-          id <- idList
+          id <- groupedIdList
         } yield {
           val f = Future {
             paper.inviteOnlySharingPolicy(id) match {
